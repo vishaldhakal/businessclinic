@@ -4,6 +4,13 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/Header";
 
+import { Bricolage_Grotesque } from "next/font/google";
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,11 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <div className="max-w-7xl mx-auto">
-          <Header />
-          {children}
-        </div>
+      <body className={`${bricolage.className} antialiased`}>
+        <Header />
+        <div className="max-w-7xl mx-auto">{children}</div>
         <Toaster />
       </body>
     </html>

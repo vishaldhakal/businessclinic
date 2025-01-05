@@ -1,14 +1,14 @@
 "use client";
 
-import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
+import { MissionSection } from "@/components/MissionSection";
+import { DashboardCharts } from "@/components/DashboardCharts";
+import { ContactSection } from "@/components/ContactSection";
+import { Footer } from "@/components/Footer";
 import { Features } from "@/components/Features";
 import { Process } from "@/components/Process";
-import { Stats } from "@/components/Stats";
 import { Testimonials } from "@/components/Testimonials";
-import { DashboardCharts } from "@/components/DashboardCharts";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 export default function Home() {
@@ -35,24 +35,28 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
-      <Hero />
-      <div className="container py-16">
-        <h2 className="text-3xl font-bold text-center mb-8">
-          Issue Resolution Statistics
-        </h2>
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : statistics ? (
-          <DashboardCharts statistics={statistics} />
-        ) : null}
-      </div>
-      <Features />
-      <Process />
-      <Stats />
-      <Testimonials />
-    </main>
+    <>
+      <main>
+        <Hero />
+        <MissionSection />
+        <div className="container py-16">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Issue Resolution Statistics
+          </h2>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : statistics ? (
+            <DashboardCharts statistics={statistics} />
+          ) : null}
+          <Features />
+          <Process />
+          <Testimonials />
+        </div>
+        <ContactSection />
+      </main>
+      <Footer />
+    </>
   );
 }
