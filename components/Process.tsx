@@ -39,9 +39,6 @@ export function Process() {
               </div>
               <h3 className="font-semibold mb-2">{step.title}</h3>
               <p className="text-muted-foreground">{step.description}</p>
-              {index < steps.length - 1 && (
-                <ArrowRight className="w-6 h-6 mt-4 text-muted-foreground hidden md:block" />
-              )}
             </div>
           ))}
         </div>

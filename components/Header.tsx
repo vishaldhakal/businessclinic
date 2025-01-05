@@ -11,7 +11,7 @@ export function Header() {
           <span className="font-bold text-2xl">Business Clinic</span>
         </Link>
         <nav className="flex items-center gap-6">
-          <Link
+          {/* <Link
             href="/about"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
@@ -28,11 +28,20 @@ export function Header() {
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Contact
+          </Link> */}
+          <Link href="/register-issue">
+            <Button variant="outline" size="sm">
+              Register Issue
+            </Button>
           </Link>
           <Link href="/admin">
-            <Button variant="outline" size="sm">
-              Admin
-            </Button>
+            <Button size="sm">Admin</Button>
+          </Link>
+          <Link
+            href="/track-issue"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
+            Track Issue
           </Link>
         </nav>
       </div>

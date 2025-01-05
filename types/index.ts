@@ -9,45 +9,44 @@ export type NatureOfIndustrySubCategory = {
   category: NatureOfIndustryCategory;
 }
 
-export type Issue = {
-  id?: number;
+export interface IssueAction {
+  id: number;
+  issue: number;
+  action_type: 'status_change' | 'comment' | 'assignment';
+  old_status?: string;
+  new_status?: string;
+  comment?: string;
+  created_at: string;
+  created_by: number;
+  created_by_name: string;
+}
+
+export interface Issue {
+  id: number;
   title: string;
   description: string;
-  issue_image?: File | null;
-  
-  // Categorization
-  nature_of_issue: string;
-  industry_specific_or_common_issue: boolean;
-  policy_related_or_procedural_issue: boolean;
-  implementation_level_policy_level_or_capacity_scale: boolean;
-  
-  // Industry Information
-  industry_size: 'Startup' | 'Micro' | 'Cottage' | 'Small' | 'Medium' | 'Large';
-  nature_of_industry_category: number;
-  nature_of_industry_sub_category: number;
-  
-  // Company Information
   name_of_company: string;
-  member_of_CIM: boolean;
-  
-  // Address Information
-  address_province: string;
-  address_district: string;
+  contact_name: string;
+  contact_number: string;
+  progress_status: string;
+  created_at?: string;
+  actions?: IssueAction[];
+  nature_of_issue: string;
+  industry_size: string;
   address_municipality: string;
+  address_district: string;
+  address_province: string;
   address_ward: string;
   address_street: string;
-  
-  // Contact Information
-  contact_name: string;
-  contact_designation: string;
-  contact_number: string;
-  contact_alternate_number?: string;
-  contact_email?: string;
-  
-  // Status
-  progress_status?: string;
-  
-  // Timestamps
-  created_at?: string;
-  updated_at?: string;
+  implementation_level: "Policy Level" | "Implementation Level" | "Capacity Scale Up";
+  share_contact_details: boolean;
+  forward_to_authority: boolean;
+  industry_specific_or_common_issue: boolean;
+  policy_related_or_procedural_issue: boolean;
+  contact_designation: string | "";
+  contact_email: string | "";
+  contact_alternate_number: string | "";
+  member_of_CIM: boolean;
+  nature_of_industry_category: NatureOfIndustryCategory | null;
+  nature_of_industry_sub_category: NatureOfIndustrySubCategory | null;
 } 
