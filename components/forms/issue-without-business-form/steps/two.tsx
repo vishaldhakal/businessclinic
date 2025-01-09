@@ -26,14 +26,6 @@ export const ReviewStep = ({
             label="Nature of Issue"
             value={formData.nature_of_issue}
           />
-          <ReviewItem
-            label="Industry Specific or Common Issue"
-            value={formData.industry_specific_or_common_issue ? "Yes" : "No"}
-          />
-          <ReviewItem
-            label="Policy Related or Procedural Issue"
-            value={formData.policy_related_or_procedural_issue ? "Yes" : "No"}
-          />
         </ReviewSection>
       </div>
     </div>

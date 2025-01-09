@@ -7,8 +7,7 @@ export const formSchema = z.object({
 
   // Categorization
   nature_of_issue: z.string().min(1, "Please select nature of issue"),
-  industry_specific_or_common_issue: z.boolean(),
-  policy_related_or_procedural_issue: z.boolean(),
+  
 
   // Industry Information
   industry_size: z.string().min(1, "Please select industry size"),

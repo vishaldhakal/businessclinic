@@ -199,33 +199,6 @@ export const StepThree = ({
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="implementation_level"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Implementation Level</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select implementation level" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Policy Level">Policy Level</SelectItem>
-                    <SelectItem value="Implementation Level">
-                      Implementation Level
-                    </SelectItem>
-                    <SelectItem value="Capacity Scale Up">
-                      Capacity Scale Up
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
       </div>
     </div>

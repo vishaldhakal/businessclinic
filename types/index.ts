@@ -46,6 +46,7 @@ export interface Issue {
   contact_designation: string | "";
   contact_email: string | "";
   contact_alternate_number: string | "";
+  issue_image: string | "";
   member_of_CIM: boolean;
   nature_of_industry_category: NatureOfIndustryCategory | null;
   nature_of_industry_sub_category: NatureOfIndustrySubCategory | null;

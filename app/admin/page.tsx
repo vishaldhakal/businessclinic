@@ -23,6 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import type { Issue, NatureOfIndustryCategory } from "@/types";
 import { IssueCharts } from "@/components/IssueCharts";
+import IssueDetail from "@/components/ui/issueDetail";
+import { useState } from "react";
 
 export default function AdminPage() {
   const { toast } = useToast();
@@ -30,9 +32,9 @@ export default function AdminPage() {
   const [issues, setIssues] = React.useState<Issue[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [statusFilter, setStatusFilter] = React.useState<string>("all");
+  const [statusFilter, setStatusFilter] = React.useState<string>("");
   const [industryFilter, setIndustryFilter] = React.useState<string>("all");
-  const [issueTypeFilter, setIssueTypeFilter] = React.useState<string>("all");
+  const [issueTypeFilter, setIssueTypeFilter] = React.useState<string>("");
   const [categories, setCategories] = React.useState<
     NatureOfIndustryCategory[]
   >([]);
@@ -44,9 +46,42 @@ export default function AdminPage() {
     React.useState<string>("all");
   const [statistics, setStatistics] = React.useState<any>(null);
   const [shareContactFilter, setShareContactFilter] =
-    React.useState<string>("all");
+    React.useState<string>("");
   const [forwardAuthorityFilter, setForwardAuthorityFilter] =
     React.useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const filteredIssues = React.useMemo(() => {
+    return issues.filter((issue) => {
+      const matchesSearch =
+        searchTerm === "" ||
+        (issue.title &&
+          issue.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (issue.name_of_company &&
+          issue.name_of_company
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()));
+
+      return matchesSearch;
+    });
+  }, [issues, searchTerm]);
+
+  // Calculate the index of the last issue on the current page
+  const indexOfLastIssue = currentPage * rowsPerPage;
+  const indexOfFirstIssue = indexOfLastIssue - rowsPerPage;
+  const currentIssues = filteredIssues.slice(
+    indexOfFirstIssue,
+    indexOfLastIssue
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredIssues.length / rowsPerPage);
+
+  // Handle page change
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   // Fetch categories
   React.useEffect(() => {
@@ -192,18 +227,6 @@ export default function AdminPage() {
     fetchStatistics();
   }, [fetchIssues, fetchStatistics]);
 
-  // Filter issues based on search term
-  const filteredIssues = React.useMemo(() => {
-    return issues.filter((issue) => {
-      const matchesSearch =
-        searchTerm === "" ||
-        issue.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        issue.name_of_company.toLowerCase().includes(searchTerm.toLowerCase());
-
-      return matchesSearch;
-    });
-  }, [issues, searchTerm]);
-
   return (
     <div className="container py-10">
       <div className="space-y-8">
@@ -216,9 +239,10 @@ export default function AdminPage() {
 
         <div>
           <h2 className="text-2xl font-bold mb-4">Issue List</h2>
+          <IssueDetail />
           {/* Filters */}
           <div className="grid gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
-            <div className="md:col-span-2 lg:col-span-4">
+            {/* <div className="md:col-span-2 lg:col-span-4">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -228,34 +252,12 @@ export default function AdminPage() {
                   className="pl-9"
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Status filter */}
-            <Select
-              value={statusFilter || "all"}
-              onValueChange={setStatusFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="Issue Registered and Documented">
-                  Registered
-                </SelectItem>
-                <SelectItem value="Issue Under Desk Study">
-                  Under Study
-                </SelectItem>
-                <SelectItem value="Issue Forwarded to Concerned Department">
-                  Forwarded
-                </SelectItem>
-                <SelectItem value="Issue Solved">Solved</SelectItem>
-                <SelectItem value="Issue Rejected">Rejected</SelectItem>
-              </SelectContent>
-            </Select>
 
             {/* Industry filter */}
-            <Select
+            {/* <Select
               value={industryFilter || "all"}
               onValueChange={setIndustryFilter}
             >
@@ -270,10 +272,10 @@ export default function AdminPage() {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Issue type filter */}
-            <Select
+            {/* <Select
               value={issueTypeFilter || "all"}
               onValueChange={setIssueTypeFilter}
             >
@@ -303,10 +305,10 @@ export default function AdminPage() {
                 </SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* New boolean filters */}
-            <Select
+            {/* <Select
               value={specificOrCommonFilter || "all"}
               onValueChange={setSpecificOrCommonFilter}
             >
@@ -318,9 +320,9 @@ export default function AdminPage() {
                 <SelectItem value="true">Industry Specific</SelectItem>
                 <SelectItem value="false">Common Issue</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
-            <Select
+            {/* <Select
               value={policyOrProceduralFilter || "all"}
               onValueChange={setPolicyOrProceduralFilter}
             >
@@ -332,9 +334,9 @@ export default function AdminPage() {
                 <SelectItem value="true">Policy Related</SelectItem>
                 <SelectItem value="false">Procedural</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
-            <Select
+            {/* <Select
               value={implementationLevelFilter || "all"}
               onValueChange={setImplementationLevelFilter}
             >
@@ -351,10 +353,10 @@ export default function AdminPage() {
                   Capacity Scale Up
                 </SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Add new filters for contact sharing and forwarding */}
-            <Select
+            {/* <Select
               value={shareContactFilter || "all"}
               onValueChange={setShareContactFilter}
             >
@@ -366,9 +368,9 @@ export default function AdminPage() {
                 <SelectItem value="true">Sharing Allowed</SelectItem>
                 <SelectItem value="false">Not Sharing</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
-            <Select
+            {/* <Select
               value={forwardAuthorityFilter || "all"}
               onValueChange={setForwardAuthorityFilter}
             >
@@ -380,7 +382,7 @@ export default function AdminPage() {
                 <SelectItem value="true">Can Forward</SelectItem>
                 <SelectItem value="false">Cannot Forward</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
 
           {/* Issues Table */}
@@ -389,51 +391,134 @@ export default function AdminPage() {
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : (
-            <div className="border rounded-lg">
+            <div className="border rounded-lg px-0">
+              {
+                <div className="flex px-5 py-5">
+                  <div className="flex w-1/5 py-2 ">
+                    <Select
+                      value={statusFilter}
+                      onValueChange={setStatusFilter}
+                    >
+                      <SelectTrigger className="h-16">
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="Issue Registered and Documented">
+                          Registered
+                        </SelectItem>
+                        <SelectItem value="Issue Under Desk Study">
+                          Under Study
+                        </SelectItem>
+                        <SelectItem value="Issue Forwarded to Concerned Department">
+                          Forwarded
+                        </SelectItem>
+                        <SelectItem value="Issue Solved">Solved</SelectItem>
+                        <SelectItem value="Issue Rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex w-1/5 py-2 px-5">
+                    <Select
+                      value={shareContactFilter}
+                      onValueChange={setShareContactFilter}
+                    >
+                      <SelectTrigger className="h-16">
+                        <SelectValue placeholder="Select Contact Sharing" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="true">Sharing Allowed</SelectItem>
+                        <SelectItem value="false">Not Sharing</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex w-1/5 py-2 px-5">
+                    <Select
+                      value={issueTypeFilter}
+                      onValueChange={setIssueTypeFilter}
+                    >
+                      <SelectTrigger className="h-16">
+                        <SelectValue placeholder="Select Issue Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Types</SelectItem>
+                        <SelectItem value="Energy">Energy</SelectItem>
+                        <SelectItem value="Human Resources – Labour">
+                          HR & Labour
+                        </SelectItem>
+                        <SelectItem value="Tax & Revenue">
+                          Tax & Revenue
+                        </SelectItem>
+                        <SelectItem value="Bank & Finance">
+                          Bank & Finance
+                        </SelectItem>
+                        <SelectItem value="Export">Export</SelectItem>
+                        <SelectItem value="Import Substitution & Domestic Product Promotion">
+                          Import Substitution
+                        </SelectItem>
+                        <SelectItem value="Transport & Transit">
+                          Transport & Transit
+                        </SelectItem>
+                        <SelectItem value="Local Government">
+                          Local Government
+                        </SelectItem>
+                        <SelectItem value="Provincial Government">
+                          Provincial Government
+                        </SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="relative w-1/2 mt-2">
+                    <Search className="absolute left-3 top-3 h-4 w-4 mt-2 text-muted-foreground" />
+                    <Input
+                      placeholder="Search issues..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-9 h-16"
+                    />
+                  </div>
+                </div>
+              }
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-gray-100">
                   <TableRow>
                     <TableHead>Title</TableHead>
                     <TableHead>Issue Details</TableHead>
-                    <TableHead>Contact Info</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created At</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredIssues.map((issue) => (
+                  {currentIssues.map((issue) => (
                     <TableRow key={issue.id}>
                       <TableCell className="font-medium">
-                        {issue.title}
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox h-4 w-4 mr-5 mt-2"
+                          />
+                          <img
+                            src={issue.issue_image}
+                            alt={`${issue.title} avatar`}
+                            className="w-10 h-10 rounded-full mr-2"
+                          />
+                          {issue.title}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          <div className="text-sm">
-                            <span className="font-medium">Type:</span>{" "}
-                            {issue.nature_of_issue}
-                          </div>
-                          <div className="text-sm">
-                            <span className="font-medium">Size:</span>{" "}
-                            {issue.industry_size}
-                          </div>
+                          <div className="text-sm">{issue.nature_of_issue}</div>
+                          <div className="text-sm">{issue.industry_size}</div>
                           <div className="text-sm text-muted-foreground">
                             {issue.address_municipality},{" "}
                             {issue.address_district}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="font-medium">
-                            {issue.name_of_company}
-                          </div>
-                          <div className="text-sm">{issue.contact_name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {issue.contact_number}
-                          </div>
-                        </div>
-                      </TableCell>
+
                       <TableCell>
                         <StatusBadge status={issue.progress_status} />
                       </TableCell>
@@ -455,6 +540,46 @@ export default function AdminPage() {
                   ))}
                 </TableBody>
               </Table>
+              <hr className="my-4 border-t border-gray-300" />
+              <div className="flex justify-between items-center mt-4 px-5 py-5">
+                <div className="flex-grow" />
+                <div className="flex items-center">
+                  <span className="mr-2">Rows per page:</span>
+                  <select
+                    value={rowsPerPage}
+                    onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                    className=" rounded p-1"
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                  </select>
+                </div>
+                <div className="flex items-center ml-4">
+                  <span>
+                    {indexOfFirstIssue + 1}–
+                    {Math.min(indexOfLastIssue, filteredIssues.length)} of{" "}
+                    {filteredIssues.length}
+                  </span>
+                  <div className="flex space-x-2 ml-4">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className=" rounded px-2 py-1"
+                    >
+                      &lt; {/* Left arrow */}
+                    </button>
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className=" rounded px-2 py-1"
+                    >
+                      &gt;
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>

@@ -79,6 +79,7 @@ export const StepTwo = ({
                   onValueChange={(value) => {
                     field.onChange(value);
                     setSelectedCategory(Number(value));
+                    console.log("Selected Category:", value);
                   }}
                   value={field.value}
                 >
