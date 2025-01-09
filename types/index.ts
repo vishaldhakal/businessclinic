@@ -50,3 +50,14 @@ export interface Issue {
   nature_of_industry_category: NatureOfIndustryCategory | null;
   nature_of_industry_sub_category: NatureOfIndustrySubCategory | null;
 } 
+
+export interface IndustryCategory {
+  id: number;
+  name: string;
+}
+
+export interface IndustrySubCategory {
+  id: number;
+  name: string;
+  category: IndustryCategory;
+}

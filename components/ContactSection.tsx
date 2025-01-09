@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function ContactSection() {
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 ">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div className="space-y-2">
