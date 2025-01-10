@@ -115,6 +115,7 @@ export function IssueCharts({ statistics }: IssueChartsProps) {
           </ResponsiveContainer>
         </CardContent>
       </Card>
+      {/* {industryData.length > 0 && ( */}
 
       <Card>
         <CardHeader>
