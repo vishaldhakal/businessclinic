@@ -27,6 +27,7 @@ import type { Issue, NatureOfIndustryCategory } from "@/types";
 import { IssueCharts } from "@/components/IssueCharts";
 import IssueDetail from "@/components/ui/issueDetail";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function AdminPage() {
   const { toast } = useToast();
@@ -503,10 +504,12 @@ export default function AdminPage() {
                             type="checkbox"
                             className="form-checkbox h-4 w-4 mr-5 mt-2"
                           />
-                          <img
+                          <Image
                             src={issue.issue_image}
                             alt={`${issue.title} avatar`}
                             className="w-10 h-10 rounded-full mr-2"
+                            width={40}
+                            height={40}
                           />
                           {issue.title}
                         </div>

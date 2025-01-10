@@ -1,5 +1,6 @@
 import { Building2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -9,11 +10,17 @@ export function Footer() {
           {/* Logo and Description */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <img src="/cim-logo.webp" alt="CIM Logo" className="h-8 w-8" />
-              <img
+              <Image
+                src="/cim-logo.webp"
+                alt="CIM Logo"
+                width={32}
+                height={32}
+              />
+              <Image
                 src="/business-clinic.svg"
                 alt="Business Clinic"
-                className="h-48 w-48"
+                width={192}
+                height={192}
               />
             </div>
             <p className="text-sm text-gray-600 max-w-xs">

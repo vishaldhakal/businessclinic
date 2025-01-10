@@ -36,8 +36,6 @@ export default function RegisterIssue() {
       title: "",
       description: "",
       nature_of_issue: "",
-      industry_specific_or_common_issue: false,
-      policy_related_or_procedural_issue: false,
     },
   });
 

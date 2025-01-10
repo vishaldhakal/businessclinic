@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function RegisterIssue() {
   const [userType, setUserType] = React.useState<string | null>(null);
@@ -32,10 +33,12 @@ export default function RegisterIssue() {
               )}
               onClick={() => handleUserTypeSelection("haveBusiness")}
             >
-              <img
+              <Image
                 src="/yse.svg"
                 alt="haveBusiness"
                 className="w-24 h-24 object-contain"
+                width={500}
+                height={300}
               />
               <div>
                 <h3 className="font-semibold text-lg">Have Business</h3>
@@ -55,10 +58,12 @@ export default function RegisterIssue() {
               )}
               onClick={() => handleUserTypeSelection("notHaveBusiness")}
             >
-              <img
+              <Image
                 src="/not.svg"
                 alt="notHaveBusiness"
                 className="w-24 h-24 object-contain"
+                width={500}
+                height={300}
               />
               <div>
                 <h3 className="font-semibold text-lg">Not Have Business</h3>

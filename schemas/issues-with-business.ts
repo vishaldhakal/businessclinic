@@ -43,6 +43,9 @@ export const formSchema = z.object({
   ]),
   share_contact_details: z.boolean(),
   forward_to_authority: z.boolean(),
+
+  industry_specific_or_common_issue: z.boolean().optional(),
+  policy_related_or_procedural_issue: z.boolean().optional(),
 });
 
 export type IssueWithBusinessSchema = z.infer<typeof formSchema>;

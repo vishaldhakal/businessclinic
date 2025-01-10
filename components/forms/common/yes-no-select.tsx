@@ -31,3 +31,7 @@ export const YesNoSelect = React.forwardRef<
     </div>
   </div>
 ));
+
+YesNoSelect.displayName = "YesNoSelect";
+
+export default YesNoSelect;

@@ -91,8 +91,7 @@ export default function RegisterIssue() {
       policy_related_or_procedural_issue: false,
       implementation_level: "Implementation Level",
       industry_size: "",
-      nature_of_industry_category: "",
-      nature_of_industry_sub_category: "",
+
       name_of_company: "",
       member_of_CIM: false,
       address_province: "",

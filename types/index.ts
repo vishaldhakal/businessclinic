@@ -41,8 +41,8 @@ export interface Issue {
   implementation_level: "Policy Level" | "Implementation Level" | "Capacity Scale Up";
   share_contact_details: boolean;
   forward_to_authority: boolean;
-  industry_specific_or_common_issue: boolean;
-  policy_related_or_procedural_issue: boolean;
+  industry_specific_or_common_issue: string;
+  policy_related_or_procedural_issue: string;
   contact_designation: string | "";
   contact_email: string | "";
   contact_alternate_number: string | "";
