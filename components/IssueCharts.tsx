@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RadarChartComponent from "@/components/radarChart";
 
 const COLORS = [
   "#0088FE",
@@ -76,13 +77,20 @@ export function IssueCharts({ statistics }: IssueChartsProps) {
       value: item.count,
     }));
 
+  // Prepare data for the radar chart
+  const radarData = statistics.issue_type_distribution.map((item) => ({
+    subject: item.nature_of_issue,
+    A: item.count,
+    B: statistics.total_issues - item.count,
+  }));
+
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader>
           <CardTitle>Status Distribution</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px]">
+        <CardContent className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -101,7 +109,7 @@ export function IssueCharts({ statistics }: IssueChartsProps) {
                   />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip formatter={(value: number) => [`${value} Issues`]} />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
@@ -110,9 +118,9 @@ export function IssueCharts({ statistics }: IssueChartsProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Industry Distribution</CardTitle>
+          <CardTitle>Updated Industry Distribution</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px]">
+        <CardContent className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={industryData}>
               <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
@@ -127,63 +135,29 @@ export function IssueCharts({ statistics }: IssueChartsProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Issue Type Distribution</CardTitle>
+          <CardTitle>Radar Chart of Issue Types</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={issueTypeData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
-                {issueTypeData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+        <CardContent className="h-[400px]">
+          <RadarChartComponent data={radarData} />
         </CardContent>
       </Card>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Implementation Level Distribution</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px]">
+        <CardContent className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={implementationLevelData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
-                {implementationLevelData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
+            <BarChart data={implementationLevelData}>
+              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+              <YAxis />
               <Tooltip />
               <Legend />
-            </PieChart>
+              <Bar dataKey="value" fill="#82CA9D" name="Issues" />
+            </BarChart>
           </ResponsiveContainer>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Card>
         <CardHeader>

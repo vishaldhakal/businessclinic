@@ -3,6 +3,8 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import LineChart from "@/components/lineChart";
+import RadarChart from "@/components/radarChart";
 import {
   Table,
   TableBody,
@@ -232,6 +234,7 @@ export default function AdminPage() {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold mb-4">Issue Management</h1>
+          <LineChart />
 
           {/* Add charts section */}
           {statistics && <IssueCharts statistics={statistics} />}
