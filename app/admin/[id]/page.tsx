@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Loader2, ChevronLeft } from "lucide-react";
 import type { Issue } from "@/types";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 export default function IssueDetailsPage() {
   const params = useParams();
@@ -33,6 +34,7 @@ export default function IssueDetailsPage() {
   const [newStatus, setNewStatus] = React.useState<string>("");
   const [comment, setComment] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   // Fetch issue details
   React.useEffect(() => {
@@ -120,6 +122,46 @@ export default function IssueDetailsPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleDeleteIssue = () => {
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!issue) return;
+
+    try {
+      const deleteResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/issues/${issue.id}/`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!deleteResponse.ok) throw new Error("Failed to delete issue");
+
+      toast({
+        title: "Success",
+        description: "Issue deleted successfully",
+      });
+
+      router.push("/admin");
+    } catch (error) {
+      console.error("Error deleting issue:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete issue",
+        variant: "destructive",
+      });
+    } finally {
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleEditIssue = () => {
+    if (!issue) return;
+    router.push(`/admin/edit/${issue.id}`);
   };
 
   if (isLoading) {
@@ -405,9 +447,27 @@ export default function IssueDetailsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Delete button */}
+            <div className="mb-4">
+              <Button
+                onClick={handleDeleteIssue}
+                variant="destructive"
+                className="w-full"
+              >
+                Delete Issue
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

@@ -3,8 +3,6 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import LineChart from "@/components/lineChart";
-import RadarChart from "@/components/radarChart";
 import {
   Table,
   TableBody,
@@ -235,159 +233,13 @@ export default function AdminPage() {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold mb-4">Issue Management</h1>
-          <LineChart />
 
-          {/* Add charts section */}
           {statistics && <IssueCharts statistics={statistics} />}
         </div>
 
         <div>
           <h2 className="text-2xl font-bold mb-4">Issue List</h2>
           <IssueDetail />
-          {/* Filters */}
-          <div className="grid gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
-            {/* <div className="md:col-span-2 lg:col-span-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search issues..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-            </div> */}
-
-            {/* Status filter */}
-
-            {/* Industry filter */}
-            {/* <Select
-              value={industryFilter || "all"}
-              onValueChange={setIndustryFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by industry" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Industries</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id.toString()}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select> */}
-
-            {/* Issue type filter */}
-            {/* <Select
-              value={issueTypeFilter || "all"}
-              onValueChange={setIssueTypeFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by issue type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Energy">Energy</SelectItem>
-                <SelectItem value="Human Resources – Labour">
-                  HR & Labour
-                </SelectItem>
-                <SelectItem value="Tax & Revenue">Tax & Revenue</SelectItem>
-                <SelectItem value="Bank & Finance">Bank & Finance</SelectItem>
-                <SelectItem value="Export">Export</SelectItem>
-                <SelectItem value="Import Substitution & Domestic Product Promotion">
-                  Import Substitution
-                </SelectItem>
-                <SelectItem value="Transport & Transit">
-                  Transport & Transit
-                </SelectItem>
-                <SelectItem value="Local Government">
-                  Local Government
-                </SelectItem>
-                <SelectItem value="Provincial Government">
-                  Provincial Government
-                </SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select> */}
-
-            {/* New boolean filters */}
-            {/* <Select
-              value={specificOrCommonFilter || "all"}
-              onValueChange={setSpecificOrCommonFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Issue Specificity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="true">Industry Specific</SelectItem>
-                <SelectItem value="false">Common Issue</SelectItem>
-              </SelectContent>
-            </Select> */}
-
-            {/* <Select
-              value={policyOrProceduralFilter || "all"}
-              onValueChange={setPolicyOrProceduralFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Issue Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="true">Policy Related</SelectItem>
-                <SelectItem value="false">Procedural</SelectItem>
-              </SelectContent>
-            </Select> */}
-
-            {/* <Select
-              value={implementationLevelFilter || "all"}
-              onValueChange={setImplementationLevelFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Implementation Level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Levels</SelectItem>
-                <SelectItem value="Policy Level">Policy Level</SelectItem>
-                <SelectItem value="Implementation Level">
-                  Implementation Level
-                </SelectItem>
-                <SelectItem value="Capacity Scale Up">
-                  Capacity Scale Up
-                </SelectItem>
-              </SelectContent>
-            </Select> */}
-
-            {/* Add new filters for contact sharing and forwarding */}
-            {/* <Select
-              value={shareContactFilter || "all"}
-              onValueChange={setShareContactFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Contact Sharing" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="true">Sharing Allowed</SelectItem>
-                <SelectItem value="false">Not Sharing</SelectItem>
-              </SelectContent>
-            </Select> */}
-
-            {/* <Select
-              value={forwardAuthorityFilter || "all"}
-              onValueChange={setForwardAuthorityFilter}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Forward Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="true">Can Forward</SelectItem>
-                <SelectItem value="false">Cannot Forward</SelectItem>
-              </SelectContent>
-            </Select> */}
-          </div>
 
           {/* Issues Table */}
           {isLoading ? (
@@ -505,7 +357,9 @@ export default function AdminPage() {
                             className="form-checkbox h-4 w-4 mr-5 mt-2"
                           />
                           <Image
-                            src={issue.issue_image}
+                            src={
+                              issue.issue_image || "/path/to/default/image.jpg"
+                            }
                             alt={`${issue.title} avatar`}
                             className="w-10 h-10 rounded-full mr-2"
                             width={40}

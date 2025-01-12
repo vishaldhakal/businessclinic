@@ -85,102 +85,97 @@ export function IssueCharts({ statistics }: IssueChartsProps) {
   }));
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <Card>
-        <CardHeader>
-          <CardTitle>Status Distribution</CardTitle>
-        </CardHeader>
-        <CardContent className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={statusData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
-                {statusData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => [`${value} Issues`]} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-      {/* {industryData.length > 0 && ( */}
+    <div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Status Distribution</CardTitle>
+          </CardHeader>
+          <CardContent className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={statusData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
+                  {statusData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number) => [`${value} Issues`]} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+        {/* {industryData.length > 0 && ( */}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Updated Industry Distribution</CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>Updated Industry Distribution</CardTitle>
+          </CardHeader>
+          <CardContent className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={industryData}>
+                <XAxis
+                  dataKey="name"
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#8884d8" name="Issues" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+      <Card className="mt-8 rounded-lg border border-gray-200 bg-white transition-transform transform ">
+        <CardHeader className="py-6 px-8 bg-gray-100 rounded-t-lg">
+          <CardTitle className="text-xl font-semibold text-gray-800">
+            Issue Statistics
+          </CardTitle>
         </CardHeader>
-        <CardContent className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={industryData}>
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#8884d8" name="Issues" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Radar Chart of Issue Types</CardTitle>
-        </CardHeader>
-        <CardContent className="h-[400px]">
-          <RadarChartComponent data={radarData} />
-        </CardContent>
-      </Card>
-
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>Implementation Level Distribution</CardTitle>
-        </CardHeader>
-        <CardContent className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={implementationLevelData}>
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#82CA9D" name="Issues" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card> */}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Issue Statistics</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-8">
           <div className="grid gap-4">
-            <div className="flex justify-between">
-              <span>Total Issues:</span>
-              <span className="font-bold">{statistics.total_issues}</span>
+            {/* Total Issues */}
+            <div className="flex justify-between items-center border-b border-gray-300 pb-4">
+              <span className="text-gray-600 font-medium text-base">
+                Total Issues:
+              </span>
+              <span className="text-gray-900 font-bold text-lg">
+                {statistics.total_issues}
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span>Industry Specific Issues:</span>
-              <span className="font-bold">
+
+            {/* Industry Specific Issues */}
+            <div className="flex justify-between items-center border-b border-gray-300 pb-4">
+              <span className="text-gray-600 font-medium text-base">
+                Industry Specific Issues:
+              </span>
+              <span className="text-gray-900 font-bold text-lg">
                 {statistics.specificity_distribution.find(
                   (item) => item.industry_specific_or_common_issue
                 )?.count || 0}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span>Policy Related Issues:</span>
-              <span className="font-bold">
+
+            {/* Policy Related Issues */}
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 font-medium text-base">
+                Policy Related Issues:
+              </span>
+              <span className="text-gray-900 font-bold text-lg">
                 {statistics.policy_distribution.find(
                   (item) => item.policy_related_or_procedural_issue
                 )?.count || 0}
