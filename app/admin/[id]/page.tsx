@@ -24,6 +24,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Loader2, ChevronLeft } from "lucide-react";
 import type { Issue } from "@/types";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import Link from "next/link";
 
 export default function IssueDetailsPage() {
   const params = useParams();
@@ -178,13 +179,11 @@ export default function IssueDetailsPage() {
 
   return (
     <div className="container py-10">
-      <Button
-        variant="ghost"
-        className="mb-6"
-        onClick={() => router.push("/admin")}
-      >
-        <ChevronLeft className="mr-2 h-4 w-4" />
-        Back to All Issues
+      <Button asChild variant="ghost" className="mb-6">
+        <Link href="/admin">
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Back to All Issues
+        </Link>
       </Button>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

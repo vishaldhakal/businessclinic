@@ -4,6 +4,7 @@ import * as React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Container from "@/components/Container";
 import {
   Card,
   CardContent,
@@ -54,7 +55,7 @@ export default function TrackIssuePage() {
   };
 
   return (
-    <div className="container py-10">
+    <Container>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Track Your Issue</h1>
@@ -262,7 +263,7 @@ export default function TrackIssuePage() {
           </Card>
         ) : null}
       </div>
-    </div>
+    </Container>
   );
 }
 

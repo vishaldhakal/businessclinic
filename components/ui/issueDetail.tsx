@@ -36,7 +36,7 @@ const IssueDetail = () => {
   ];
 
   return (
-    <div className="flex items-center justify-between gap-4 bg-white p-6 shadow-md rounded-lg">
+    <div className=" items-center justify-between gap-4 bg-white p-6 shadow-md rounded-lg  hidden">
       {data.map((item, index) => (
         <div
           key={index}

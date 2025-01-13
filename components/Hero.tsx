@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { PenLine, Eye, EyeOff, CheckCircle2, Clock } from "lucide-react";
+import Container from "@/components/Container";
 
 interface StatCardProps {
   value: string | number;
@@ -22,9 +23,9 @@ function StatCard({ value, label, icon, color }: StatCardProps) {
 
 export function Hero() {
   return (
-    <div className="relative overflow-hidden">
-      <div className="container py-20">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+    <div className="relative">
+      <Container className="py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
           <div className="space-y-6">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-900">
@@ -38,12 +39,12 @@ export function Hero() {
                 </span>
               </i>
             </p>
-            <p className="text-gray-600 text-lg leading-relaxed max-w-[600px]">
+            <p className="text-gray-600 text-lg leading-relaxed">
               We will help you to resolve your business issues and try to solve
               your problems by sending your common issues directly to the
               concerned authority.
             </p>
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4 pt-4 flex-col md:flex-row">
               <Link href="/register-issue">
                 <Button size="lg" className="bg-blue-900 hover:bg-blue-800">
                   Register New Issue
@@ -105,7 +106,7 @@ export function Hero() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

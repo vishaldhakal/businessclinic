@@ -1,4 +1,3 @@
-import { Building2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -6,10 +5,10 @@ export function Footer() {
   return (
     <footer className="border-t bg-white">
       <div className="container py-8">
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
           {/* Logo and Description */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
+          <div className="space-y-4 text-center md:text-left">
+            <div className="flex justify-center md:justify-start items-center space-x-2">
               <Image
                 src="/cim-logo.webp"
                 alt="CIM Logo"
@@ -23,14 +22,14 @@ export function Footer() {
                 height={192}
               />
             </div>
-            <p className="text-sm text-gray-600 max-w-xs">
+            <p className="text-sm text-gray-600 max-w-xs mx-auto md:mx-0">
               A systematic policy advocacy framework of the Chamber of
               Industries Morang (CIM) for addressing industrial issues.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -63,7 +62,7 @@ export function Footer() {
           </div>
 
           {/* Partnership */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold mb-4">Partnership</h3>
             <p className="text-sm text-gray-600">
               Ministry of Industry Supply and Commerce

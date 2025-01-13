@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { FileText, Tags, Upload } from "lucide-react";
 import {
   FormControl,
@@ -8,8 +8,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { IssueWithoutBusinessSchema } from "@/schemas/issues-without-business";
+import { FloatingInput } from "@/components/ui/floatingInput";
+import { FloatingLabel } from "@/components/ui/floatingInput";
+
 import {
   Select,
   SelectContent,
@@ -18,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { industryTypes } from "@/constants/industries";
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap/minimal-tiptap";
 
 export const StepOne = ({
   form,
@@ -62,9 +65,13 @@ export const StepOne = ({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Issue Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter issue title" {...field} />
+                <div className="relative">
+                  <FloatingInput id="issue-title" placeholder=" " {...field} />
+                  <FloatingLabel htmlFor="issue-title">
+                    Issue Title
+                  </FloatingLabel>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -75,11 +82,25 @@ export const StepOne = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Job Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Describe your issue in detail"
-                  {...field}
+                <Controller
+                  name="description"
+                  control={form.control}
+                  render={({ field }) => (
+                    <MinimalTiptapEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="min-h-[550px] border rounded-md"
+                      editorContentClassName="p-4"
+                      output="html"
+                      content={field.value}
+                      placeholder="Describe your issue in detail"
+                      autofocus={false}
+                      editable={true}
+                      editorClassName="focus:outline-none prose prose-sm dark:prose-invert max-w-none"
+                    />
+                  )}
                 />
               </FormControl>
               <FormMessage />

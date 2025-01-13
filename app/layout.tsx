@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/Header";
+import Providers from "@/components/ProgressBarProvider";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 import { Bricolage_Grotesque } from "next/font/google";
 
@@ -26,9 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${bricolage.className} antialiased`}>
-        <Header />
-        <div className="max-w-7xl mx-auto">{children}</div>
-        <Toaster />
+        <TooltipProvider>
+          <Providers>
+            <Header />
+            <div className="max-w-7xl mx-auto">{children}</div>
+            <Toaster />
+          </Providers>
+        </TooltipProvider>
       </body>
     </html>
   );

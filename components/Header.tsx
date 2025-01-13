@@ -1,9 +1,15 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Building2 } from "lucide-react";
+import { useState } from "react";
+import Sheet from "@/components/Sheet";
+
 import Image from "next/image";
 
 export function Header() {
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
   return (
     <header className="border-b bg-white sticky top-0 z-50">
       <div className="flex h-16 items-center justify-between px-6">
@@ -24,7 +30,19 @@ export function Header() {
             height={300}
           />
         </Link>
-        <nav className="flex items-center gap-6">
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsSheetOpen(true)}
+            className="text-gray-600"
+          >
+            ☰
+          </button>
+        </div>
+        <nav
+          className={`flex items-center gap-6 ${
+            isNavOpen ? "block" : "hidden"
+          } md:flex`}
+        >
           <Link href="/register-issue">
             <Button
               variant="outline"
@@ -45,6 +63,7 @@ export function Header() {
           </Link>
         </nav>
       </div>
+      <Sheet isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} />
     </header>
   );
 }
