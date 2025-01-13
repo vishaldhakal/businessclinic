@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 import { StatusBadge } from "@/components/StatusBadge";
 import {
   Activity as ActivityIcon,
@@ -32,12 +31,14 @@ import {
   FolderTree as FolderTreeIcon,
   Circle as CircleIcon,
   ChevronLeft,
+  Eye as EyeIcon,
+  Image as ImageIcon,
 } from "lucide-react";
 import type { Issue } from "@/types";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import Link from "next/link";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 interface UpdateFieldProps {
   label: string;
@@ -71,7 +72,7 @@ function UpdateField({
   return (
     <div className="space-y-2 p-4 border rounded-lg">
       <div className="flex justify-between items-center">
-        <Label>{label}</Label>
+        <Label className="text-sm font-extrabold text-blue-800">{label}</Label>
         <Button
           variant="outline"
           size="sm"
@@ -174,55 +175,59 @@ export default function IssueDetailsPage() {
     React.useState<string>("");
   const [categories, setCategories] = React.useState<any[]>([]);
   const [subCategories, setSubCategories] = React.useState<any[]>([]);
+  const [isIndustrySpecific, setIsIndustrySpecific] =
+    React.useState<boolean>(false);
+  const [isPolicyRelated, setIsPolicyRelated] = React.useState<boolean>(false);
 
   // Fetch issue details
-  React.useEffect(() => {
-    const fetchIssue = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/issues/${params.id}/`
+  const fetchIssue = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/issues/${params.id}/`
+      );
+      if (!response.ok) throw new Error("Failed to fetch issue");
+      const data = await response.json();
+      setIssue(data);
+      setNewStatus(data.progress_status);
+      setImplementationLevel(data.implementation_level);
+      setIndustrySize(data.industry_size);
+      setNatureOfIssue(data.nature_of_issue);
+      setIsIndustrySpecific(data.industry_specific_or_common_issue);
+      setIsPolicyRelated(data.policy_related_or_procedural_issue);
+      if (data.nature_of_industry_category_detail) {
+        setIndustryCategory(
+          data.nature_of_industry_category_detail.id.toString()
         );
-        if (!response.ok) throw new Error("Failed to fetch issue");
-        const data = await response.json();
-        setIssue(data);
-        setNewStatus(data.progress_status);
-        setImplementationLevel(data.implementation_level);
-        setIndustrySize(data.industry_size);
-        setNatureOfIssue(data.nature_of_issue);
-
-        // Set category and subcategory from the detail fields
-        if (data.nature_of_industry_category_detail) {
-          setIndustryCategory(
-            data.nature_of_industry_category_detail.id.toString()
-          );
-        }
-
-        if (data.nature_of_industry_sub_category_detail) {
-          setIndustrySubCategory(
-            data.nature_of_industry_sub_category_detail.id.toString()
-          );
-
-          // Also fetch subcategories for the current category
-          const subCategoriesResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/nature-of-industry-subcategories/?category=${data.nature_of_industry_category_detail.id}`
-          );
-          if (subCategoriesResponse.ok) {
-            const subCategoriesData = await subCategoriesResponse.json();
-            setSubCategories(subCategoriesData.results);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching issue:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch issue details",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
       }
-    };
 
+      if (data.nature_of_industry_sub_category_detail) {
+        setIndustrySubCategory(
+          data.nature_of_industry_sub_category_detail.id.toString()
+        );
+
+        // Also fetch subcategories for the current category
+        const subCategoriesResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/nature-of-industry-subcategories/?category=${data.nature_of_industry_category_detail.id}`
+        );
+        if (subCategoriesResponse.ok) {
+          const subCategoriesData = await subCategoriesResponse.json();
+          setSubCategories(subCategoriesData.results);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching issue:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch issue details",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Call fetchIssue in useEffect
+  React.useEffect(() => {
     fetchIssue();
   }, [params.id, toast]);
 
@@ -262,7 +267,6 @@ export default function IssueDetailsPage() {
     }
   }, [industryCategory]);
 
-  // Individual update handlers
   const handleUpdateField = async (
     field: string,
     value: string,
@@ -292,12 +296,18 @@ export default function IssueDetailsPage() {
 
       if (!updateResponse.ok) throw new Error("Failed to update issue");
 
+      // Fetch the updated issue details
+      await fetchIssue(); // Call the fetchIssue function to refresh the data
+
+      // Log the action in the activity history with the correct action type
+      logActivity(field, value, comment); // Log the activity
+
       toast({
         title: "Success",
         description: `${field} updated successfully`,
       });
 
-      router.refresh();
+      router.refresh(); // Refresh the router to reflect changes
     } catch (error) {
       console.error("Error updating issue:", error);
       toast({
@@ -308,6 +318,43 @@ export default function IssueDetailsPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Update the logActivity function to include new cases
+  const logActivity = (field: string, value: string, comment: string) => {
+    let actionType = "";
+
+    switch (field) {
+      case "progress_status":
+        actionType = "status_change";
+        break;
+      case "nature_of_issue":
+        actionType = "nature_of_issue_change";
+        break;
+      case "industry_size":
+        actionType = "industry_size_change";
+        break;
+      case "implementation_level":
+        actionType = "implementation_level_change";
+        break;
+      case "nature_of_industry_category":
+        actionType = "industry_category_change";
+        break;
+      case "industry_specific_or_common_issue":
+        actionType = "industry_specific_change"; // New case for industry specific
+        break;
+      case "policy_related_or_procedural_issue":
+        actionType = "policy_related_change"; // New case for policy related
+        break;
+      // Add more cases as needed
+      default:
+        actionType = "unknown_change";
+    }
+
+    // Log the activity
+    console.log(
+      `Activity logged: ${actionType} - ${field} changed to ${value} with comment: ${comment}`
+    );
   };
 
   const handleDeleteIssue = () => {
@@ -350,6 +397,11 @@ export default function IssueDetailsPage() {
     router.push(`/admin/edit/${issue.id}`);
   };
 
+  const handleImageClick = (imageUrl: string) => {
+    // Logic to preview the image, e.g., open a modal or a new window
+    window.open(imageUrl, "_blank"); // Opens the image in a new tab
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -377,12 +429,13 @@ export default function IssueDetailsPage() {
           <Card>
             <CardHeader className="space-y-1">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex items-center">
                   <CardTitle className="text-2xl">{issue?.title}</CardTitle>
-                  <CardDescription>
-                    Created on{" "}
-                    {new Date(issue?.created_at!).toLocaleDateString()}
-                  </CardDescription>
+                  <ImageIcon
+                    className="ml-2 h-5 w-5 cursor-pointer"
+                    onClick={() => handleImageClick(issue.issue_image)}
+                    aria-label="Preview image"
+                  />
                 </div>
                 <StatusBadge status={issue?.progress_status || ""} />
               </div>
@@ -540,11 +593,13 @@ export default function IssueDetailsPage() {
           </Card>
 
           {/* Add new management card */}
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Issue Management</CardTitle>
+          <Card className="mt-6 shadow-lg border border-gray-200 rounded-lg">
+            <CardHeader className="bg-gray-100 p-4 rounded-t-lg">
+              <CardTitle className="text-2xl font-semibold text-gray-800">
+                Issue Management
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="p-4 space-y-6">
               <UpdateField
                 label="Status"
                 value={newStatus}
@@ -638,6 +693,46 @@ export default function IssueDetailsPage() {
                   onChange: setIndustrySubCategory,
                 }}
               />
+
+              <UpdateField
+                label="Industry Specific"
+                value={isIndustrySpecific ? "true" : "false"}
+                options={[
+                  { value: "true", label: "Yes" },
+                  { value: "false", label: "No" },
+                ]}
+                onChange={(value) => {
+                  setIsIndustrySpecific(value === "true");
+                }}
+                onUpdate={() =>
+                  handleUpdateField(
+                    "industry_specific_or_common_issue",
+                    isIndustrySpecific ? "true" : "false",
+                    comment
+                  )
+                }
+                isSubmitting={isSubmitting}
+              />
+
+              <UpdateField
+                label="Policy Related"
+                value={isPolicyRelated ? "true" : "false"}
+                options={[
+                  { value: "true", label: "Yes" },
+                  { value: "false", label: "No" },
+                ]}
+                onChange={(value) => {
+                  setIsPolicyRelated(value === "true");
+                }}
+                onUpdate={() =>
+                  handleUpdateField(
+                    "policy_related_or_procedural_issue",
+                    isPolicyRelated ? "true" : "false",
+                    comment
+                  )
+                }
+                isSubmitting={isSubmitting}
+              />
             </CardContent>
           </Card>
         </div>
@@ -653,15 +748,14 @@ export default function IssueDetailsPage() {
             }}
           >
             {/* Activity History Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ActivityIcon className="h-5 w-5" />
+            <Card className=" shadow-lg border border-gray-200 rounded-lg">
+              <CardHeader className="bg-gray-100 p-4 rounded-t-lg">
+                <CardTitle className="text-2xl font-semibold text-gray-800">
                   Activity History
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
+              <CardContent className="p-4">
+                <div className="max-h-96 overflow-y-auto space-y-4">
                   {issue?.actions?.map((action) => (
                     <div
                       key={action.id}
@@ -782,8 +876,8 @@ const NATURE_OF_ISSUE_CHOICES = [
 
 function getActionDescription(action: any) {
   switch (action.action_type) {
-    case "status_change":
-      return `Status changed from "${action.old_status?.replace("Issue ", "")}" to "${action.new_status?.replace("Issue ", "")}"`;
+    case "progress_status_change":
+      return `Status changed from "${action.old_value}" to "${action.new_value}"`;
     case "nature_of_issue_change":
       return `Nature of Issue changed from "${action.old_value}" to "${action.new_value}"`;
     case "industry_size_change":
@@ -794,6 +888,10 @@ function getActionDescription(action: any) {
       return `Industry Category changed from "${action.old_value}" to "${action.new_value}"`;
     case "industry_subcategory_change":
       return `Industry Sub-Category changed from "${action.old_value}" to "${action.new_value}"`;
+    case "industry_specific_or_common_issue_change":
+      return `Industry Specific status changed from "${action.old_value}" to "${action.new_value}"`;
+    case "policy_related_or_procedural_issue_change":
+      return `Policy Related status changed from "${action.old_value}" to "${action.new_value}"`;
     default:
       return action.action_type;
   }

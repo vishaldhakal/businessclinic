@@ -21,7 +21,12 @@ function StatCard({ value, label, icon, color }: StatCardProps) {
   );
 }
 
-export function Hero() {
+interface HeroProps {
+  totalIssues: number;
+  openIssues: number;
+}
+
+export function Hero({ totalIssues, openIssues }: HeroProps) {
   return (
     <div className="relative">
       <Container className="py-20">
@@ -66,14 +71,14 @@ export function Hero() {
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <StatCard
-                value="813"
+                value={totalIssues}
                 label="Total Issues"
                 icon={<PenLine className="h-6 w-6 text-blue-600" />}
                 color="bg-blue-100"
               />
               <StatCard
-                value="787"
-                label="Registered Issues"
+                value={openIssues}
+                label="Open Issues"
                 icon={<CheckCircle2 className="h-6 w-6 text-red-600" />}
                 color="bg-red-100"
               />

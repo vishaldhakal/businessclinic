@@ -39,7 +39,10 @@ export default function Home() {
     <>
       <main>
         <Container>
-          <Hero />
+          <Hero
+            totalIssues={statistics?.total_issues || 0}
+            openIssues={statistics?.open_issues || 0}
+          />
 
           <MissionSection />
 

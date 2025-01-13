@@ -14,6 +14,7 @@ import {
   Line,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Hero } from "@/components/Hero";
 
 const COLORS = [
   "#4f46e5", // indigo-600
@@ -23,11 +24,6 @@ const COLORS = [
   "#9333ea", // purple-600
   "#e11d48", // rose-600
 ];
-
-interface ChartData {
-  name: string;
-  value: number;
-}
 
 interface IssueStatistics {
   status_distribution: { progress_status: string; count: number }[];
@@ -92,6 +88,11 @@ export function DashboardCharts({
     }
     return null;
   };
+
+  // Calculate open issues
+  const openIssues = statusData
+    .filter((item) => !item.name.includes("Solved"))
+    .reduce((acc, curr) => acc + curr.value, 0);
 
   return (
     <div className={`grid gap-4 md:grid-cols-2 ${className}`}>
@@ -216,6 +217,8 @@ export function DashboardCharts({
           </div>
         </CardContent>
       </Card>
+
+      <Hero totalIssues={statistics.total_issues} openIssues={openIssues} />
     </div>
   );
 }
