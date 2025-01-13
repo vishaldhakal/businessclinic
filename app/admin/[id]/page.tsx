@@ -21,10 +21,108 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Loader2, ChevronLeft } from "lucide-react";
+import {
+  Activity as ActivityIcon,
+  History as HistoryIcon,
+  RefreshCcw as RefreshCcwIcon,
+  Tag as TagIcon,
+  Scale as ScaleIcon,
+  Layers as LayersIcon,
+  Folder as FolderIcon,
+  FolderTree as FolderTreeIcon,
+  Circle as CircleIcon,
+  ChevronLeft,
+} from "lucide-react";
 import type { Issue } from "@/types";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import Link from "next/link";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+
+interface UpdateFieldProps {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+  onUpdate: () => void;
+  isSubmitting: boolean;
+  isCommentField?: boolean;
+}
+
+function UpdateField({
+  label,
+  value,
+  options,
+  onChange,
+  onUpdate,
+  isSubmitting,
+  isCommentField = false,
+}: UpdateFieldProps) {
+  const [comment, setComment] = React.useState("");
+  const [isEditing, setIsEditing] = React.useState(false);
+
+  return (
+    <div className="space-y-2 p-4 border rounded-lg">
+      <div className="flex justify-between items-center">
+        <Label>{label}</Label>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          {isEditing ? "Cancel" : "Edit"}
+        </Button>
+      </div>
+
+      {isEditing ? (
+        <div className="space-y-4">
+          {isCommentField ? (
+            <Textarea
+              placeholder="Add a comment..."
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+            />
+          ) : (
+            <>
+              <Select value={value} onValueChange={onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+                </SelectTrigger>
+                <SelectContent>
+                  {options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Textarea
+                placeholder="Add a comment about this change..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </>
+          )}
+
+          <Button
+            className="w-full"
+            onClick={() => {
+              onUpdate();
+              setIsEditing(false);
+              setComment("");
+            }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Updating..." : `Update ${label}`}
+          </Button>
+        </div>
+      ) : (
+        <p className="text-sm font-medium">{value}</p>
+      )}
+    </div>
+  );
+}
 
 export default function IssueDetailsPage() {
   const params = useParams();
@@ -36,6 +134,15 @@ export default function IssueDetailsPage() {
   const [comment, setComment] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [implementationLevel, setImplementationLevel] =
+    React.useState<string>("");
+  const [industrySize, setIndustrySize] = React.useState<string>("");
+  const [natureOfIssue, setNatureOfIssue] = React.useState<string>("");
+  const [industryCategory, setIndustryCategory] = React.useState<string>("");
+  const [industrySubCategory, setIndustrySubCategory] =
+    React.useState<string>("");
+  const [categories, setCategories] = React.useState<any[]>([]);
+  const [subCategories, setSubCategories] = React.useState<any[]>([]);
 
   // Fetch issue details
   React.useEffect(() => {
@@ -48,6 +155,13 @@ export default function IssueDetailsPage() {
         const data = await response.json();
         setIssue(data);
         setNewStatus(data.progress_status);
+        setImplementationLevel(data.implementation_level);
+        setIndustrySize(data.industry_size);
+        setNatureOfIssue(data.nature_of_issue);
+        setIndustryCategory(data.nature_of_industry_category?.id || "");
+        setIndustrySubCategory(
+          data.nature_of_industry_sub_category?.name || ""
+        );
       } catch (error) {
         console.error("Error fetching issue:", error);
         toast({
@@ -63,12 +177,52 @@ export default function IssueDetailsPage() {
     fetchIssue();
   }, [params.id, toast]);
 
-  const handleUpdateStatus = async () => {
-    if (!issue || !newStatus) return;
+  // Add fetch for categories
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/nature-of-industry-categories/`
+        );
+        if (!response.ok) throw new Error("Failed to fetch categories");
+        const data = await response.json();
+        setCategories(data.results);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch subcategories when category changes
+  React.useEffect(() => {
+    if (industryCategory) {
+      const fetchSubCategories = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/nature-of-industry-subcategories/?category=${industryCategory}`
+          );
+          if (!response.ok) throw new Error("Failed to fetch subcategories");
+          const data = await response.json();
+          setSubCategories(data.results);
+        } catch (error) {
+          console.error("Error fetching subcategories:", error);
+        }
+      };
+      fetchSubCategories();
+    }
+  }, [industryCategory]);
+
+  // Individual update handlers
+  const handleUpdateField = async (
+    field: string,
+    value: string,
+    comment: string
+  ) => {
+    if (!issue) return;
 
     setIsSubmitting(true);
     try {
-      // Update issue status
       const updateResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/issues/${issue.id}/`,
         {
@@ -77,47 +231,25 @@ export default function IssueDetailsPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            progress_status: newStatus,
-          }),
-        }
-      );
-
-      if (!updateResponse.ok) throw new Error("Failed to update status");
-
-      // Add action
-      const actionResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/issues/${issue.id}/actions/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            action_type: "status_change",
-            old_status: issue.progress_status,
-            new_status: newStatus,
+            [field]: value,
             comment: comment,
-            issue: issue.id,
           }),
         }
       );
 
-      if (!actionResponse.ok) throw new Error("Failed to add action");
+      if (!updateResponse.ok) throw new Error("Failed to update issue");
 
       toast({
         title: "Success",
-        description: "Issue status updated successfully",
+        description: `${field} updated successfully`,
       });
 
-      // Refresh issue data
-      const updatedIssue = await updateResponse.json();
-      setIssue(updatedIssue);
-      setComment("");
+      router.refresh();
     } catch (error) {
       console.error("Error updating issue:", error);
       toast({
         title: "Error",
-        description: "Failed to update issue status",
+        description: `Failed to update ${field}`,
         variant: "destructive",
       });
     } finally {
@@ -168,7 +300,7 @@ export default function IssueDetailsPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <div className="text-muted-foreground">Loading...</div>
       </div>
     );
   }
@@ -353,6 +485,110 @@ export default function IssueDetailsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Add new management card */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Issue Management</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <UpdateField
+                label="Status"
+                value={newStatus}
+                options={PROGRESS_STATUS_CHOICES.map((status) => ({
+                  value: status,
+                  label: status.replace("Issue ", ""),
+                }))}
+                onChange={setNewStatus}
+                onUpdate={() =>
+                  handleUpdateField("progress_status", newStatus, comment)
+                }
+                isSubmitting={isSubmitting}
+              />
+
+              <UpdateField
+                label="Nature of Issue"
+                value={natureOfIssue}
+                options={NATURE_OF_ISSUE_CHOICES.map((issue) => ({
+                  value: issue,
+                  label: issue,
+                }))}
+                onChange={setNatureOfIssue}
+                onUpdate={() =>
+                  handleUpdateField("nature_of_issue", natureOfIssue, comment)
+                }
+                isSubmitting={isSubmitting}
+              />
+
+              <UpdateField
+                label="Industry Size"
+                value={industrySize}
+                options={INDUSTRY_SIZE_CHOICES.map((size) => ({
+                  value: size,
+                  label: size,
+                }))}
+                onChange={setIndustrySize}
+                onUpdate={() =>
+                  handleUpdateField("industry_size", industrySize, comment)
+                }
+                isSubmitting={isSubmitting}
+              />
+
+              <UpdateField
+                label="Implementation Level"
+                value={implementationLevel}
+                options={IMPLEMENTATION_LEVEL_CHOICES.map((level) => ({
+                  value: level,
+                  label: level,
+                }))}
+                onChange={setImplementationLevel}
+                onUpdate={() =>
+                  handleUpdateField(
+                    "implementation_level",
+                    implementationLevel,
+                    comment
+                  )
+                }
+                isSubmitting={isSubmitting}
+              />
+
+              <UpdateField
+                label="Industry Category"
+                value={industryCategory}
+                options={categories.map((cat) => ({
+                  value: cat.id.toString(),
+                  label: cat.name,
+                }))}
+                onChange={setIndustryCategory}
+                onUpdate={() =>
+                  handleUpdateField(
+                    "nature_of_industry_category",
+                    industryCategory,
+                    comment
+                  )
+                }
+                isSubmitting={isSubmitting}
+              />
+
+              <UpdateField
+                label="Industry Sub Category"
+                value={industrySubCategory}
+                options={subCategories.map((subCat) => ({
+                  value: subCat.id.toString(),
+                  label: subCat.name,
+                }))}
+                onChange={setIndustrySubCategory}
+                onUpdate={() =>
+                  handleUpdateField(
+                    "nature_of_industry_sub_category",
+                    industrySubCategory,
+                    comment
+                  )
+                }
+                isSubmitting={isSubmitting}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right Column - Actions */}
@@ -360,89 +596,64 @@ export default function IssueDetailsPage() {
           <div
             className="space-y-6 sticky"
             style={{
-              top: "calc(4rem + 24px)", // navbar height (4rem/64px) + padding
-              maxHeight: "calc(100vh - 6rem)", // viewport height - (navbar + padding)
+              top: "calc(4rem + 24px)",
+              maxHeight: "calc(100vh - 6rem)",
               overflowY: "auto",
             }}
           >
-            {/* Status Update Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Update Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Select
-                  value={newStatus || issue?.progress_status}
-                  onValueChange={setNewStatus}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select new status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PROGRESS_STATUS_CHOICES.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status.replace("Issue ", "")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Textarea
-                  placeholder="Add a comment (optional)"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                />
-
-                <Button
-                  onClick={handleUpdateStatus}
-                  disabled={
-                    isSubmitting || newStatus === issue?.progress_status
-                  }
-                  className="w-full"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating...
-                    </>
-                  ) : (
-                    "Update Status"
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-
             {/* Activity History Card */}
             <Card>
               <CardHeader>
-                <CardTitle>Activity History</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <ActivityIcon className="h-5 w-5" />
+                  Activity History
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {issue?.actions?.map((action) => (
                     <div
                       key={action.id}
-                      className="text-sm border-l-2 border-muted pl-4 pb-4 last:pb-0"
+                      className="relative pl-8 pb-6 last:pb-0"
                     >
-                      <p className="font-medium">
-                        {action.action_type === "status_change"
-                          ? `Status changed from ${action.old_status?.replace(
-                              "Issue ",
-                              ""
-                            )} to ${action.new_status?.replace("Issue ", "")}`
-                          : action.action_type}
-                      </p>
-                      {action.comment && (
-                        <p className="mt-1 text-muted-foreground">
-                          {action.comment}
+                      {/* Timeline connector */}
+                      <div className="absolute left-3 top-0 bottom-0 w-px bg-muted" />
+
+                      {/* Timeline dot */}
+                      <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full border-2 border-muted bg-background flex items-center justify-center">
+                        {getActionIcon(action.action_type)}
+                      </div>
+
+                      <div className="space-y-1">
+                        <p className="font-medium text-sm">
+                          {getActionDescription(action)}
                         </p>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-1">
-                        by {action.created_by_name} on{" "}
-                        {new Date(action.created_at).toLocaleString()}
-                      </p>
+                        {action.comment && (
+                          <p className="text-sm text-muted-foreground bg-muted/50 p-2 rounded-md mt-2">
+                            {action.comment}
+                          </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          {action.created_by_name ? (
+                            <span className="font-medium text-primary">
+                              {action.created_by_name}
+                            </span>
+                          ) : (
+                            "System"
+                          )}{" "}
+                          • {new Date(action.created_at).toLocaleString()}
+                        </p>
+                      </div>
                     </div>
                   ))}
+                  {(!issue?.actions || issue.actions.length === 0) && (
+                    <div className="text-center py-6">
+                      <HistoryIcon className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
+                      <p className="text-sm text-muted-foreground">
+                        No activity recorded yet.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -489,3 +700,69 @@ const PROGRESS_STATUS_CHOICES = [
   "Issue Solved",
   "Issue Rejected",
 ];
+
+const IMPLEMENTATION_LEVEL_CHOICES = [
+  "Policy Level",
+  "Implementation Level",
+  "Capacity Scale Up",
+];
+
+const INDUSTRY_SIZE_CHOICES = [
+  "Startup",
+  "Micro",
+  "Cottage",
+  "Small",
+  "Medium",
+  "Large",
+];
+
+const NATURE_OF_ISSUE_CHOICES = [
+  "Energy",
+  "Human Resources – Labour",
+  "Tax & Revenue",
+  "Bank & Finance",
+  "Export",
+  "Import Substitution & Domestic Product Promotion",
+  "Transport & Transit",
+  "Local Government",
+  "Provincial Government",
+  "Other",
+];
+
+function getActionDescription(action: any) {
+  switch (action.action_type) {
+    case "status_change":
+      return `Status changed from "${action.old_status?.replace("Issue ", "")}" to "${action.new_status?.replace("Issue ", "")}"`;
+    case "nature_of_issue_change":
+      return `Nature of Issue changed from "${action.old_value}" to "${action.new_value}"`;
+    case "industry_size_change":
+      return `Industry Size changed from "${action.old_value}" to "${action.new_value}"`;
+    case "implementation_level_change":
+      return `Implementation Level changed from "${action.old_value}" to "${action.new_value}"`;
+    case "industry_category_change":
+      return `Industry Category changed from "${action.old_value}" to "${action.new_value}"`;
+    case "industry_subcategory_change":
+      return `Industry Sub-Category changed from "${action.old_value}" to "${action.new_value}"`;
+    default:
+      return action.action_type;
+  }
+}
+
+function getActionIcon(actionType: string) {
+  switch (actionType) {
+    case "status_change":
+      return <RefreshCcwIcon className="h-3 w-3 text-blue-500" />;
+    case "nature_of_issue_change":
+      return <TagIcon className="h-3 w-3 text-purple-500" />;
+    case "industry_size_change":
+      return <ScaleIcon className="h-3 w-3 text-orange-500" />;
+    case "implementation_level_change":
+      return <LayersIcon className="h-3 w-3 text-green-500" />;
+    case "industry_category_change":
+      return <FolderIcon className="h-3 w-3 text-yellow-500" />;
+    case "industry_subcategory_change":
+      return <FolderTreeIcon className="h-3 w-3 text-red-500" />;
+    default:
+      return <CircleIcon className="h-3 w-3 text-gray-500" />;
+  }
+}
