@@ -47,6 +47,12 @@ interface UpdateFieldProps {
   onUpdate: () => void;
   isSubmitting: boolean;
   isCommentField?: boolean;
+  dependentField?: {
+    label: string;
+    value: string;
+    options: { value: string; label: string }[];
+    onChange: (value: string) => void;
+  };
 }
 
 function UpdateField({
@@ -57,6 +63,7 @@ function UpdateField({
   onUpdate,
   isSubmitting,
   isCommentField = false,
+  dependentField,
 }: UpdateFieldProps) {
   const [comment, setComment] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
@@ -76,34 +83,47 @@ function UpdateField({
 
       {isEditing ? (
         <div className="space-y-4">
-          {isCommentField ? (
-            <Textarea
-              placeholder="Add a comment..."
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-            />
-          ) : (
+          <Select value={value} onValueChange={onChange}>
+            <SelectTrigger>
+              <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {dependentField && (
             <>
-              <Select value={value} onValueChange={onChange}>
+              <Label>{dependentField.label}</Label>
+              <Select
+                value={dependentField.value}
+                onValueChange={dependentField.onChange}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+                  <SelectValue
+                    placeholder={`Select ${dependentField.label.toLowerCase()}`}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {options.map((option) => (
+                  {dependentField.options.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-
-              <Textarea
-                placeholder="Add a comment about this change..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
             </>
           )}
+
+          <Textarea
+            placeholder="Add a comment about this change..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
 
           <Button
             className="w-full"
@@ -118,7 +138,18 @@ function UpdateField({
           </Button>
         </div>
       ) : (
-        <p className="text-sm font-medium">{value}</p>
+        <p className="text-sm font-medium">
+          {options.find((opt) => opt.value === value)?.label || value}
+          {dependentField && dependentField.value && (
+            <span className="text-muted-foreground">
+              {" "}
+              →{" "}
+              {dependentField.options.find(
+                (opt) => opt.value === dependentField.value
+              )?.label || dependentField.value}
+            </span>
+          )}
+        </p>
       )}
     </div>
   );
@@ -158,10 +189,28 @@ export default function IssueDetailsPage() {
         setImplementationLevel(data.implementation_level);
         setIndustrySize(data.industry_size);
         setNatureOfIssue(data.nature_of_issue);
-        setIndustryCategory(data.nature_of_industry_category?.id || "");
-        setIndustrySubCategory(
-          data.nature_of_industry_sub_category?.name || ""
-        );
+
+        // Set category and subcategory from the detail fields
+        if (data.nature_of_industry_category_detail) {
+          setIndustryCategory(
+            data.nature_of_industry_category_detail.id.toString()
+          );
+        }
+
+        if (data.nature_of_industry_sub_category_detail) {
+          setIndustrySubCategory(
+            data.nature_of_industry_sub_category_detail.id.toString()
+          );
+
+          // Also fetch subcategories for the current category
+          const subCategoriesResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/nature-of-industry-subcategories/?category=${data.nature_of_industry_category_detail.id}`
+          );
+          if (subCategoriesResponse.ok) {
+            const subCategoriesData = await subCategoriesResponse.json();
+            setSubCategories(subCategoriesData.results);
+          }
+        }
       } catch (error) {
         console.error("Error fetching issue:", error);
         toast({
@@ -217,12 +266,19 @@ export default function IssueDetailsPage() {
   const handleUpdateField = async (
     field: string,
     value: string,
-    comment: string
+    comment: string,
+    additionalData?: Record<string, any>
   ) => {
     if (!issue) return;
 
     setIsSubmitting(true);
     try {
+      const updateData = {
+        [field]: value,
+        comment: comment,
+        ...additionalData,
+      };
+
       const updateResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/business_clinic/issues/${issue.id}/`,
         {
@@ -230,10 +286,7 @@ export default function IssueDetailsPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            [field]: value,
-            comment: comment,
-          }),
+          body: JSON.stringify(updateData),
         }
       );
 
@@ -559,33 +612,31 @@ export default function IssueDetailsPage() {
                   value: cat.id.toString(),
                   label: cat.name,
                 }))}
-                onChange={setIndustryCategory}
+                onChange={(value) => {
+                  setIndustryCategory(value);
+                  // Reset subcategory when category changes
+                  setIndustrySubCategory("");
+                }}
                 onUpdate={() =>
                   handleUpdateField(
                     "nature_of_industry_category",
                     industryCategory,
-                    comment
+                    comment,
+                    {
+                      nature_of_industry_sub_category: industrySubCategory,
+                    }
                   )
                 }
                 isSubmitting={isSubmitting}
-              />
-
-              <UpdateField
-                label="Industry Sub Category"
-                value={industrySubCategory}
-                options={subCategories.map((subCat) => ({
-                  value: subCat.id.toString(),
-                  label: subCat.name,
-                }))}
-                onChange={setIndustrySubCategory}
-                onUpdate={() =>
-                  handleUpdateField(
-                    "nature_of_industry_sub_category",
-                    industrySubCategory,
-                    comment
-                  )
-                }
-                isSubmitting={isSubmitting}
+                dependentField={{
+                  label: "Industry Sub Category",
+                  value: industrySubCategory,
+                  options: subCategories.map((subCat) => ({
+                    value: subCat.id.toString(),
+                    label: subCat.name,
+                  })),
+                  onChange: setIndustrySubCategory,
+                }}
               />
             </CardContent>
           </Card>
