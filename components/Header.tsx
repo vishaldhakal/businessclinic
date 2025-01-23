@@ -52,12 +52,9 @@ export function Header() {
               Register New Issue
             </Button>
           </Link>
-          <Link href="/admin">
-            <Button size="sm">Admin</Button>
-          </Link>
           <Link
-            href="/track-issue"
-            className="text-sm font-medium hover:text-primary transition-colors"
+            href="/track-issue "
+            className="text-sm font-medium hover:text-primary transition-colors duration-300 ease-in-out"
           >
             Track Issue
           </Link>

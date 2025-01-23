@@ -7,6 +7,7 @@ import Providers from "@/components/ProgressBarProvider";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 import { Bricolage_Grotesque } from "next/font/google";
+import { AuthProvider } from "@/context/AuthContext";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -28,13 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${bricolage.className} antialiased`}>
-        <TooltipProvider>
-          <Providers>
-            <Header />
-            <div className="max-w-7xl mx-auto">{children}</div>
-            <Toaster />
-          </Providers>
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Providers>
+              <Header />
+              <div className="max-w-7xl mx-auto">{children}</div>
+              <Toaster />
+            </Providers>
+          </TooltipProvider>
+        </AuthProvider> 
+       
       </body>
     </html>
   );

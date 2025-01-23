@@ -49,7 +49,7 @@ export function Hero({ totalIssues, openIssues }: HeroProps) {
           >
             <div className="space-y-4 sm:space-y-6 max-w-xl mx-auto lg:mx-0">
               <motion.h1
-                className="text-[2.75rem] font-bold leading-tight text-[#1a2b3c]"
+                className=" md:text-[2.75rem] sm:text-[1.75rem] font-medium md:font-bold leading-tight text-[#1a2b3c]"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}

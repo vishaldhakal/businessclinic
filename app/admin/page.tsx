@@ -26,7 +26,6 @@ import type { Issue } from "@/types";
 import { IssueCharts } from "@/components/IssueCharts";
 import IssueDetail from "@/components/ui/issueDetail";
 import { useState } from "react";
-import Image from "next/image";
 import useSWR from "swr";
 
 export default function AdminPage() {
