@@ -263,16 +263,9 @@ export default function AdminPage() {
                                 type="checkbox"
                                 className="form-checkbox h-4 w-4 mr-5 mt-2"
                               />
-                              <Image
-                                src={
-                                  issue.issue_image ||
-                                  "/path/to/default/image.jpg"
-                                }
-                                alt={`${issue.title} avatar`}
-                                className="w-10 h-10 rounded-full mr-2"
-                                width={40}
-                                height={40}
-                              />
+                              <div className="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold mr-2">
+                                {issue.title.charAt(0).toUpperCase()}
+                              </div>
                               {issue.title}
                             </div>
                           </TableCell>

@@ -9,15 +9,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IssueWithBusinessSchema } from "@/schemas/issues-with-business";
-import { UserCircle, MapPin, Building2 } from "lucide-react";
+import { UserCircle, MapPin, Building2, Share } from "lucide-react";
 import { YesNoSelect } from "../../common/yes-no-select";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import {} from "@/components/ui/select";
 
 export const StepThree = ({
   form,
@@ -87,34 +81,6 @@ export const StepThree = ({
                     placeholder="Enter email address"
                     {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="share_contact_details"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Share Contact Details?</FormLabel>
-                <FormControl>
-                  <YesNoSelect {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="forward_to_authority"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Forward to Authority?</FormLabel>
-                <FormControl>
-                  <YesNoSelect {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -194,6 +160,48 @@ export const StepThree = ({
                 <FormLabel>Street</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter street address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+      <div className="flex  gap-x-16"></div>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-xl font-semibold">
+          <Share className="h-5 w-5 text-primary" />
+          <h2>Share Details</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <FormField
+            control={form.control}
+            name="share_contact_details"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Share Contact Details?</FormLabel>
+                <p className="text-sm text-gray-500">
+                  Share the contact details of the business with the authority.
+                </p>
+                <FormControl>
+                  <YesNoSelect {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="forward_to_authority"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Forward to Authority?</FormLabel>
+                <p className="text-sm text-gray-500">
+                  Forward Your details to the authority concerned.
+                </p>
+                <FormControl>
+                  <YesNoSelect {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

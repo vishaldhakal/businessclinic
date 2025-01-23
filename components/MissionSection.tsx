@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function MissionSection() {
   return (
-    <section className="py-16">
+    <section className="py-2">
       <div className="container">
         <div className="grid gap-8 md:grid-cols-3">
           {/* Mission Card */}

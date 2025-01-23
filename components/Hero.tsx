@@ -1,23 +1,31 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { PenLine, Eye, EyeOff, CheckCircle2, Clock } from "lucide-react";
+import { PenLine, ArrowRight } from "lucide-react";
 import Container from "@/components/Container";
+import Image from "next/image";
+import { motion } from "framer-motion";
 
-interface StatCardProps {
-  value: string | number;
-  label: string;
-  icon: React.ReactNode;
-  color: string;
+interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  active?: boolean;
 }
 
-function StatCard({ value, label, icon, color }: StatCardProps) {
+function NavLink({ href, children, active }: NavLinkProps) {
   return (
-    <Card className="p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition-shadow">
-      <div className={`${color} rounded-full p-3 mb-3`}>{icon}</div>
-      <span className="text-xl font-bold mb-1">{value}</span>
-      <span className="text-sm text-muted-foreground">{label}</span>
-    </Card>
+    <Link
+      href={href}
+      className={`text-sm font-medium transition-colors hover:text-blue-600 ${
+        active
+          ? "bg-blue-100 text-blue-600 px-3 py-1 rounded-full"
+          : "text-gray-600"
+      }`}
+    >
+      {children}
+    </Link>
   );
 }
 
@@ -28,89 +36,166 @@ interface HeroProps {
 
 export function Hero({ totalIssues, openIssues }: HeroProps) {
   return (
-    <div className="relative">
-      <Container className="py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div className="min-h-screen bg-white overflow-hidden">
+      {/* Hero Section */}
+      <Container className="mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left side - Content */}
-          <div className="space-y-6">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-900">
-              Business Clinic Platform
-            </h1>
-            <p className="text-lg text-blue-900 font-medium">
-              <i>
-                an initiative by the{" "}
-                <span className="text-blue-700">
-                  CIM (Chamber of Industry, Morang)
-                </span>
-              </i>
-            </p>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              We will help you to resolve your business issues and try to solve
-              your problems by sending your common issues directly to the
-              concerned authority.
-            </p>
-            <div className="flex gap-4 pt-4 flex-col md:flex-row">
-              <Link href="/register-issue">
-                <Button size="lg" className="bg-blue-900 hover:bg-blue-800">
-                  Register New Issue
-                </Button>
-              </Link>
-              <Link href="/track-issue">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white"
-                >
-                  Track Your Issue
-                </Button>
-              </Link>
+          <motion.div
+            className="space-y-8"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="space-y-6 max-w-xl">
+              <motion.h1
+                className="text-[2.75rem] font-bold leading-tight text-[#1a2b3c]"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                BUSINESS ISSUE REGISTRATION
+              </motion.h1>
+              <motion.p
+                className="text-gray-600 text-lg"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                Submit your business concerns directly to the Chamber of
+                Industry, Morang. We streamline the process of connecting you
+                with the right authorities for quick resolution.
+              </motion.p>
+              <motion.div
+                className="pt-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <Link href="/register-issue">
+                  <Button size="lg" className="bg-blue-900 hover:bg-blue-800">
+                    Register New Issue
+                  </Button>
+                </Link>
+                <Link href="/track-issue">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white ml-5"
+                  >
+                    Track Issue
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.div
+                className="flex gap-6 pt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                <Link href="#" className="text-gray-400 hover:text-blue-600">
+                  <PenLine className="h-6 w-6" />
+                </Link>
+                <Link href="#" className="text-gray-400 hover:text-blue-600">
+                  <svg
+                    className="h-6 w-6"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"
+                      strokeWidth="2"
+                    />
+                    <path d="M12 6v6l4 2" strokeWidth="2" />
+                  </svg>
+                </Link>
+                <Link href="#" className="text-gray-400 hover:text-blue-600">
+                  <svg
+                    className="h-6 w-6"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path d="M2 12h20" strokeWidth="2" />
+                    <path
+                      d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                </Link>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right side - Statistics */}
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <StatCard
-                value={totalIssues}
-                label="Total Issues"
-                icon={<PenLine className="h-6 w-6 text-blue-600" />}
-                color="bg-blue-100"
+          {/* Right side - Illustration */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <motion.div
+              className="absolute top-0 right-0 w-4/5 h-4/5 bg-[#e6f3ff] rounded-[40px]"
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 6 }}
+              transition={{ delay: 0.5, duration: 0.5, type: "spring" }}
+            ></motion.div>
+            <motion.div
+              className="relative z-10"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+            >
+              <Image
+                src="/dash.png"
+                alt="Online Registration Illustration"
+                className="w-full h-full"
+                width={500}
+                height={500}
               />
-              <StatCard
-                value={openIssues}
-                label="Open Issues"
-                icon={<CheckCircle2 className="h-6 w-6 text-red-600" />}
-                color="bg-red-100"
-              />
-              <StatCard
-                value="182"
-                label="Processing"
-                icon={<Clock className="h-6 w-6 text-amber-600" />}
-                color="bg-amber-100"
-              />
-              <StatCard
-                value="605"
-                label="Closed"
-                icon={<CheckCircle2 className="h-6 w-6 text-green-600" />}
-                color="bg-green-100"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <StatCard
-                value="0"
-                label="Seen"
-                icon={<Eye className="h-6 w-6 text-blue-600" />}
-                color="bg-blue-100"
-              />
-              <StatCard
-                value="26"
-                label="Unseen"
-                icon={<EyeOff className="h-6 w-6 text-blue-600" />}
-                color="bg-blue-100"
-              />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
+      </Container>
+
+      {/* Stats Section */}
+      <Container className="mt-24">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.5 }}
+        >
+          {[
+            { number: totalIssues, label: "Total Issues Registered" },
+            { number: openIssues, label: "Active Cases" },
+            { number: "24/7", label: "Support Available" },
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
+            >
+              <motion.div
+                className="text-4xl font-bold text-blue-900 mb-2"
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  delay: 1.4 + index * 0.1,
+                  duration: 0.3,
+                  type: "spring",
+                }}
+              >
+                {stat.number}
+              </motion.div>
+              <div className="text-gray-600">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </Container>
     </div>
   );

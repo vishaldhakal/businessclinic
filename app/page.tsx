@@ -9,7 +9,6 @@ import { Features } from "@/components/Features";
 import { Process } from "@/components/Process";
 import { Testimonials } from "@/components/Testimonials";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
 import Container from "@/components/Container";
 
 export default function Home() {
@@ -47,16 +46,6 @@ export default function Home() {
           <MissionSection />
 
           <div className="container py-16">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              Issue Resolution Statistics
-            </h2>
-            {isLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin" />
-              </div>
-            ) : statistics ? (
-              <DashboardCharts statistics={statistics} />
-            ) : null}
             <Features />
             <Process />
             <Testimonials />

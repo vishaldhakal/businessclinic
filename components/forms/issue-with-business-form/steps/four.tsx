@@ -13,7 +13,11 @@ export const ReviewStep = ({
       <div className="grid gap-6">
         <ReviewSection title="Issue Details">
           <ReviewItem label="Title" value={formData.title} />
-          <ReviewItem label="Description" value={formData.description} />
+          <ReviewItem
+            label="Description"
+            value={formData.description}
+            customClass="description-box" // Add custom class for styling
+          />
           <ReviewItem
             label="Attached File"
             value={

@@ -20,8 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { industryTypes } from "@/constants/industries";
-import { YesNoSelect } from "../../common/yes-no-select";
-
 import { FloatingLabel } from "@/components/ui/floatingInput";
 import { FloatingInput } from "@/components/ui/floatingInput";
 export const StepOne = ({

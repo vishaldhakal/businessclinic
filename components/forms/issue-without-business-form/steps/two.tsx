@@ -1,6 +1,7 @@
 import { IssueWithoutBusinessSchema } from "@/schemas/issues-without-business";
 import { ReviewSection } from "../review-components/ReviewSection";
 import { ReviewItem } from "../review-components/ReviewItem";
+
 export const ReviewStep = ({
   formData,
 }: {
@@ -13,7 +14,11 @@ export const ReviewStep = ({
       <div className="grid gap-6">
         <ReviewSection title="Issue Details">
           <ReviewItem label="Title" value={formData.title} />
-          <ReviewItem label="Description" value={formData.description} />
+          <ReviewItem
+            label="Description"
+            value={formData.description}
+            customClass="description-box" // Add custom class to handle overflow/scroll
+          />
           <ReviewItem
             label="Attached File"
             value={

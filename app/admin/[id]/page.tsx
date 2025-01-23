@@ -442,11 +442,11 @@ export default function IssueDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Description */}
-              <div className="space-y-2 bg-muted/50 p-4 rounded-lg">
-                <h3 className="font-semibold">Description</h3>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {issue?.description}
-                </p>
+              <div className="space-y-4">
+                <div
+                  className="text-sm text-muted-foreground"
+                  dangerouslySetInnerHTML={{ __html: issue?.description || "" }}
+                />
               </div>
 
               <div className="grid gap-6 mt-6">
@@ -458,26 +458,36 @@ export default function IssueDetailsPage() {
                       Issue Information
                     </h3>
                     <div className="space-y-3">
-                      <InfoItem
-                        label="Nature of Issue"
-                        value={issue?.nature_of_issue}
-                      />
-                      <InfoItem
-                        label="Industry Size"
-                        value={issue?.industry_size}
-                      />
-                      <InfoItem
-                        label="Industry Category"
-                        value={issue?.nature_of_industry_category?.name}
-                      />
-                      <InfoItem
-                        label="Industry Sub-Category"
-                        value={issue?.nature_of_industry_sub_category?.name}
-                      />
-                      <InfoItem
-                        label="Implementation Level"
-                        value={issue?.implementation_level}
-                      />
+                      {issue?.nature_of_issue && (
+                        <InfoItem
+                          label="Nature of Issue"
+                          value={issue.nature_of_issue}
+                        />
+                      )}
+                      {issue?.industry_size && (
+                        <InfoItem
+                          label="Industry Size"
+                          value={issue.industry_size}
+                        />
+                      )}
+                      {issue?.nature_of_industry_category?.name && (
+                        <InfoItem
+                          label="Industry Category"
+                          value={issue.nature_of_industry_category.name}
+                        />
+                      )}
+                      {issue?.nature_of_industry_sub_category?.name && (
+                        <InfoItem
+                          label="Industry Sub-Category"
+                          value={issue.nature_of_industry_sub_category.name}
+                        />
+                      )}
+                      {issue?.implementation_level && (
+                        <InfoItem
+                          label="Implementation Level"
+                          value={issue.implementation_level}
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -487,30 +497,40 @@ export default function IssueDetailsPage() {
                       Company Details
                     </h3>
                     <div className="space-y-3">
-                      <InfoItem
-                        label="Company Name"
-                        value={issue?.name_of_company}
-                      />
-                      <InfoItem
-                        label="CIM Member"
-                        value={issue?.member_of_CIM ? "Yes" : "No"}
-                      />
-                      <InfoItem
-                        label="Industry Specific"
-                        value={
-                          issue?.industry_specific_or_common_issue
-                            ? "Yes"
-                            : "No"
-                        }
-                      />
-                      <InfoItem
-                        label="Policy Related"
-                        value={
-                          issue?.policy_related_or_procedural_issue
-                            ? "Yes"
-                            : "No"
-                        }
-                      />
+                      {issue?.name_of_company && (
+                        <InfoItem
+                          label="Company Name"
+                          value={issue.name_of_company}
+                        />
+                      )}
+                      {issue?.member_of_CIM !== undefined && (
+                        <InfoItem
+                          label="CIM Member"
+                          value={issue.member_of_CIM ? "Yes" : "No"}
+                        />
+                      )}
+                      {issue?.industry_specific_or_common_issue !==
+                        undefined && (
+                        <InfoItem
+                          label="Industry Specific"
+                          value={
+                            issue.industry_specific_or_common_issue
+                              ? "Yes"
+                              : "No"
+                          }
+                        />
+                      )}
+                      {issue?.policy_related_or_procedural_issue !==
+                        undefined && (
+                        <InfoItem
+                          label="Policy Related"
+                          value={
+                            issue.policy_related_or_procedural_issue
+                              ? "Yes"
+                              : "No"
+                          }
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -523,28 +543,33 @@ export default function IssueDetailsPage() {
                       Contact Information
                     </h3>
                     <div className="space-y-3">
-                      <InfoItem
-                        label="Contact Name"
-                        value={issue?.contact_name}
-                      />
-                      <InfoItem
-                        label="Designation"
-                        value={issue?.contact_designation}
-                      />
-                      <InfoItem
-                        label="Contact Number"
-                        value={issue?.contact_number}
-                      />
-                      <InfoItem
-                        label="Alternate Number"
-                        value={
-                          issue?.contact_alternate_number || "Not provided"
-                        }
-                      />
-                      <InfoItem
-                        label="Email"
-                        value={issue?.contact_email || "Not provided"}
-                      />
+                      {issue?.contact_name && (
+                        <InfoItem
+                          label="Contact Name"
+                          value={issue.contact_name}
+                        />
+                      )}
+                      {issue?.contact_designation && (
+                        <InfoItem
+                          label="Designation"
+                          value={issue.contact_designation}
+                        />
+                      )}
+                      {issue?.contact_number && (
+                        <InfoItem
+                          label="Contact Number"
+                          value={issue.contact_number}
+                        />
+                      )}
+                      {issue?.contact_alternate_number && (
+                        <InfoItem
+                          label="Alternate Number"
+                          value={issue.contact_alternate_number}
+                        />
+                      )}
+                      {issue?.contact_email && (
+                        <InfoItem label="Email" value={issue.contact_email} />
+                      )}
                     </div>
                   </div>
 
@@ -554,20 +579,30 @@ export default function IssueDetailsPage() {
                       Address Information
                     </h3>
                     <div className="space-y-3">
-                      <InfoItem
-                        label="Province"
-                        value={issue?.address_province}
-                      />
-                      <InfoItem
-                        label="District"
-                        value={issue?.address_district}
-                      />
-                      <InfoItem
-                        label="Municipality"
-                        value={issue?.address_municipality}
-                      />
-                      <InfoItem label="Ward" value={issue?.address_ward} />
-                      <InfoItem label="Street" value={issue?.address_street} />
+                      {issue?.address_province && (
+                        <InfoItem
+                          label="Province"
+                          value={issue.address_province}
+                        />
+                      )}
+                      {issue?.address_district && (
+                        <InfoItem
+                          label="District"
+                          value={issue.address_district}
+                        />
+                      )}
+                      {issue?.address_municipality && (
+                        <InfoItem
+                          label="Municipality"
+                          value={issue.address_municipality}
+                        />
+                      )}
+                      {issue?.address_ward && (
+                        <InfoItem label="Ward" value={issue.address_ward} />
+                      )}
+                      {issue?.address_street && (
+                        <InfoItem label="Street" value={issue.address_street} />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -578,14 +613,18 @@ export default function IssueDetailsPage() {
                     Sharing Preferences
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <InfoItem
-                      label="Share Contact Details"
-                      value={issue?.share_contact_details ? "Yes" : "No"}
-                    />
-                    <InfoItem
-                      label="Forward to Authority"
-                      value={issue?.forward_to_authority ? "Yes" : "No"}
-                    />
+                    {issue?.share_contact_details !== undefined && (
+                      <InfoItem
+                        label="Share Contact Details"
+                        value={issue.share_contact_details ? "Yes" : "No"}
+                      />
+                    )}
+                    {issue?.forward_to_authority !== undefined && (
+                      <InfoItem
+                        label="Forward to Authority"
+                        value={issue.forward_to_authority ? "Yes" : "No"}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
