@@ -154,14 +154,14 @@ export default function RegisterIssue() {
 
   return (
     <>
-      <div className="min-h-screen py-10 px-4">
+      <div className="min-h-screen py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-10">
+          <div className="mb-6 sm:mb-8 md:mb-10">
             <div className="flex items-center justify-between mb-4">
               {steps.map((step) => (
                 <div
                   key={step.id}
-                  className={`flex items-center ${
+                  className={`flex items-center flex-1 ${
                     currentStep >= step.id
                       ? "text-primary"
                       : "text-muted-foreground"
@@ -169,7 +169,7 @@ export default function RegisterIssue() {
                 >
                   <div
                     className={`
-                    w-8 h-8 rounded-full flex items-center justify-center
+                    w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base
                     ${
                       currentStep >= step.id
                         ? "bg-primary text-white"
@@ -179,33 +179,34 @@ export default function RegisterIssue() {
                   >
                     {step.id}
                   </div>
-                  <span className="ml-2 hidden sm:inline">{step.title}</span>
+                  <span className="ml-2 text-xs sm:text-sm md:text-base hidden sm:inline">{step.title}</span>
                   {step.id < steps.length && (
-                    <div className="w-12 h-[2px] mx-2 bg-muted" />
+                    <div className="w-8 sm:w-12 h-[2px] mx-2 bg-muted flex-grow" />
                   )}
                 </div>
               ))}
             </div>
             <Progress
               value={(currentStep / steps.length) * 100}
-              className="h-2"
+              className="h-1 sm:h-2"
             />
           </div>
 
-          <Card className="p-6">
+          <Card className="p-4 sm:p-6 md:p-8">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-6 sm:space-y-8"
               >
                 {renderStepContent()}
 
-                <div className="flex justify-between mt-8">
+                <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-0 mt-6 sm:mt-8">
                   {currentStep > 1 && (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={previousStep}
+                      className="w-full sm:w-auto order-2 sm:order-1"
                     >
                       Previous
                     </Button>
@@ -218,14 +219,14 @@ export default function RegisterIssue() {
                         e.preventDefault();
                         nextStep();
                       }}
-                      className="ml-auto"
+                      className="w-full sm:w-auto order-1 sm:order-2"
                     >
                       Next
                     </Button>
                   ) : (
                     <Button
                       type="submit"
-                      className="ml-auto"
+                      className="w-full sm:w-auto order-1 sm:order-2"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (

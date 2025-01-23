@@ -152,7 +152,11 @@ export const StepTwo = ({
               <FormItem>
                 <FormLabel>Company Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter company name" {...field} />
+                  <Input 
+                    placeholder="Enter company name" 
+                    {...field} 
+                    className="h-10 sm:h-11 text-sm sm:text-base"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

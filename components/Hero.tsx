@@ -38,16 +38,16 @@ export function Hero({ totalIssues, openIssues }: HeroProps) {
   return (
     <div className="min-h-screen bg-white overflow-hidden">
       {/* Hero Section */}
-      <Container className="mt-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <Container className="mt-12 sm:mt-16 md:mt-20 px-4 sm:px-6 lg:px-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left side - Content */}
           <motion.div
-            className="space-y-8"
+            className="space-y-6 sm:space-y-8"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="space-y-6 max-w-xl">
+            <div className="space-y-4 sm:space-y-6 max-w-xl mx-auto lg:mx-0">
               <motion.h1
                 className="text-[2.75rem] font-bold leading-tight text-[#1a2b3c]"
                 initial={{ opacity: 0, y: -20 }}
@@ -67,21 +67,21 @@ export function Hero({ totalIssues, openIssues }: HeroProps) {
                 with the right authorities for quick resolution.
               </motion.p>
               <motion.div
-                className="pt-4"
+                className="pt-4 flex flex-col sm:flex-row gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
               >
-                <Link href="/register-issue">
-                  <Button size="lg" className="bg-blue-900 hover:bg-blue-800">
+                <Link href="/register-issue" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-blue-900 hover:bg-blue-800">
                     Register New Issue
                   </Button>
                 </Link>
-                <Link href="/track-issue">
+                <Link href="/track-issue" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white ml-5"
+                    className="w-full sm:w-auto border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white"
                   >
                     Track Issue
                   </Button>
@@ -151,9 +151,10 @@ export function Hero({ totalIssues, openIssues }: HeroProps) {
               <Image
                 src="/dash.png"
                 alt="Online Registration Illustration"
-                className="w-full h-full"
+                className="w-full h-auto object-contain sm:hidden md:block hidden"
                 width={500}
                 height={500}
+                priority
               />
             </motion.div>
           </motion.div>
@@ -161,9 +162,9 @@ export function Hero({ totalIssues, openIssues }: HeroProps) {
       </Container>
 
       {/* Stats Section */}
-      <Container className="mt-24">
+      <Container className="mt-12 sm:mt-16 md:mt-24 px-4 sm:px-6 lg:px-0">
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
